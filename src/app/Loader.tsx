@@ -45,7 +45,7 @@ export default class Loader extends React.Component<Props, State> {
   render() {
     return this.state.visible ? (
       <View style={loader.loader}>
-        <ActivityIndicator size="large" color={COLORS.PRIMARY} />
+        <ActivityIndicator size="large" color={COLORS.TINT} />
         {this.props.text && <Text style={loader.text}>{this.props.text}</Text>}
       </View>
     ) : null;

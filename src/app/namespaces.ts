@@ -1,4 +1,14 @@
 export namespace RickAndMorty {
+  export interface ResponseInfo {
+    count: number;
+    next: string;
+    pages: number;
+    prev: string;
+  }
+  export interface Response {
+    info: ResponseInfo;
+    results: Array<any>;
+  }
   export interface Origin {
     name: string;
     url: string;

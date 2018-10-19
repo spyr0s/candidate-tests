@@ -22,7 +22,10 @@ export default class Api extends Http {
     return q.length === 0 ? "" : "?" + q.join("&");
   }
 
-  getCharacters(filter: Query = null): Promise<HttpResponse> {
+  getCharacters(filter: Query = null, page?: number): Promise<HttpResponse> {
+    if (page) {
+      filter["page"] = page;
+    }
     const filterQuery = filter !== null ? this.createUrlQuery(filter) : "";
     const url = Api.ENDPOINT + "character/" + filterQuery;
     return this.getRequest(url);

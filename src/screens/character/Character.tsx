@@ -36,7 +36,7 @@ export default class CharacterScreen extends React.Component<
   static navigationOptions = ({ navigation }) => {
     const character: RickAndMorty.Character = navigation.getParam("character");
     return {
-      title: character.name
+      headerTitle: character.name
     };
   };
   render() {

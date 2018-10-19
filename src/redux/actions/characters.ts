@@ -16,7 +16,9 @@ export interface CharactersResult {
 export interface CharacterAction extends AnyAction {
   type: string;
   error?: any;
+  info?: RickAndMorty.ResponseInfo;
   characters?: CharactersResult;
+  append?: boolean;
 }
 
 /********** GET CHARACTERS ****************/
@@ -27,11 +29,15 @@ function getCharactersRequest(): CharacterAction {
 }
 
 function getCharactersSuccess(
-  characters: Array<RickAndMorty.Character>
+  info: RickAndMorty.ResponseInfo,
+  characters: Array<RickAndMorty.Character>,
+  append: boolean
 ): CharacterAction {
   return {
     type: GET_CHARACTERS_SUCCESS,
-    characters: characterNormalizer(characters)
+    info,
+    characters: characterNormalizer(characters),
+    append
   };
 }
 
@@ -42,14 +48,21 @@ function getCharactersError(error: any): CharacterAction {
   };
 }
 
-export function getCharacters(filter: Query = null) {
+export function getCharacters(
+  filter: Query = null,
+  page: number = 1,
+  append: boolean = true
+) {
+  console.log(filter, page);
   return function(dispatch) {
     dispatch(getCharactersRequest());
     return new Api()
-      .getCharacters(filter)
+      .getCharacters(filter, page)
       .then((response: HttpResponse) => {
-        console.log(response.data);
-        dispatch(getCharactersSuccess(response.data.results));
+        const data: RickAndMorty.Response = response.data;
+        const info = data.info;
+        const characters: Array<RickAndMorty.Character> = data.results;
+        dispatch(getCharactersSuccess(info, characters, append));
       })
       .catch(e => dispatch(getCharactersError(e)));
   };
