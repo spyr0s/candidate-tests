@@ -2,6 +2,7 @@ import {
   GET_CHARACTERS_REQUEST,
   GET_CHARACTERS_SUCCESS,
   GET_CHARACTERS_ERROR,
+  SET_CHARACTERS_FILTERS_SUCCESS,
   CharacterAction
 } from "../actions/characters";
 
@@ -12,7 +13,8 @@ export function charactersReducer(
       entities: { characters: {} },
       result: [],
       info: { count: 0, pages: 0, next: "", previous: "" }
-    }
+    },
+    filters: { page: 1, gender: null, species: null, status: null }
   },
   action: CharacterAction
 ) {
@@ -43,6 +45,11 @@ export function charactersReducer(
         info: action.info,
         characters,
         loading: false
+      };
+    case SET_CHARACTERS_FILTERS_SUCCESS:
+      return {
+        ...state,
+        filters: Object.assign({}, action.filters)
       };
     case GET_CHARACTERS_ERROR:
       return {

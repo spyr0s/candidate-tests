@@ -10,7 +10,8 @@ import {
   TouchableOpacity,
   Linking,
   Animated,
-  Dimensions
+  Dimensions,
+  BackHandler
 } from "react-native";
 import { ListItem, Icon } from "react-native-elements";
 import { list } from "../../styles/styles";
@@ -19,6 +20,7 @@ import { Status } from "../characters/Status";
 import { scale } from "../../styles/scaling";
 import { COLORS } from "../../styles";
 import moment from "moment";
+import { Species } from "../characters/Species";
 export interface CharacterScreenParams {
   character: RickAndMorty.Character;
 }
@@ -32,6 +34,19 @@ export default class CharacterScreen extends React.Component<
     super(props);
     this.animatedHeaderValue = new Animated.Value(0);
   }
+
+  componentDidMount() {
+    BackHandler.addEventListener("hardwareBackPress", this.handleBackPress);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener("hardwareBackPress", this.handleBackPress);
+  }
+
+  handleBackPress = () => {
+    this.props.navigation.goBack(null);
+    return true;
+  };
 
   static navigationOptions = ({ navigation }) => {
     const character: RickAndMorty.Character = navigation.getParam("character");
@@ -57,11 +72,6 @@ export default class CharacterScreen extends React.Component<
       outputRange: [1, 0.7, 1],
       extrapolate: "clamp"
     });
-    const AnimatedAltHeaderOpacity = this.animatedHeaderValue.interpolate({
-      inputRange: [HEADER_MIN_HEIGHT, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
-      outputRange: [0, 1],
-      extrapolate: "clamp"
-    });
     const AnimateHeaderHeight = this.animatedHeaderValue.interpolate({
       inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
       outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
@@ -81,22 +91,30 @@ export default class CharacterScreen extends React.Component<
           style={{ flex: 1 }}
         >
           <Row label="Name" value={character.name} />
-          <Row label="Episodes" value={character.episode.length.toString()} />
+          <Row
+            label="Species"
+            value={
+              <Species
+                species={character.species}
+                showLabel
+                type={character.type}
+              />
+            }
+          />
           <Row
             label="Gender"
             value={<Gender gender={character.gender} showLabel />}
           />
-          <Row label="Location" value={character.location.name} />
-          <Row label="Origin" value={character.origin.name} />
-          <Row label="Species" value={character.species} />
           <Row
             label="Status"
             value={<Status status={character.status} showLabel />}
           />
-          <Row label="Type" value={character.type} />
+          <Row label="Episodes" value={character.episode.length.toString()} />
+          <Row label="Location" value={character.location.name} />
+          <Row label="Origin" value={character.origin.name} />
           <Row
             label="Created"
-            value={moment(character.created).format( "DD/MM/YYYY")}
+            value={moment(character.created).format("DD/MM/YYYY")}
           />
         </ScrollView>
         <Animated.View

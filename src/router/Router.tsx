@@ -1,9 +1,15 @@
 import React from "react";
-import { createSwitchNavigator, createStackNavigator } from "react-navigation";
+import {
+  createSwitchNavigator,
+  createStackNavigator,
+  createDrawerNavigator
+} from "react-navigation";
 import { COLORS } from "../styles";
 import CharactersScreen from "../screens/characters/Characters";
 import CharacterScreen from "../screens/character/Character";
-import { Easing, Animated } from "react-native";
+import { Easing, Animated, View } from "react-native";
+import { scale } from "../styles/scaling";
+import FiltersMenu from "../screens/filters/FiltersMenu";
 const transitionConfig = () => {
   return {
     transitionSpec: {
@@ -30,14 +36,30 @@ const transitionConfig = () => {
   };
 };
 
-const MainStack = createStackNavigator(
+const DrawerStack = createDrawerNavigator(
   {
     characters: {
       screen: CharactersScreen,
       navigationOptions: {
         title: "Rick And Morty Characters"
       }
+    }
+  },
+  {
+    navigationOptions: {
+      
+
     },
+    drawerPosition: "right",
+    initialRouteName: "characters",
+    contentComponent: FiltersMenu,
+    drawerWidth: scale(280)
+  }
+);
+
+const MainStack = createStackNavigator(
+  {
+    drawer: DrawerStack,
     character: {
       screen: CharacterScreen,
       navigationOptions: {
@@ -47,9 +69,11 @@ const MainStack = createStackNavigator(
   },
   {
     headerMode: "float",
-    initialRouteName: "characters",
+    initialRouteName: "drawer",
     transitionConfig,
     navigationOptions: {
+      headerTitle:"Rick And Morty Characters",
+      title:"Rick And Morty Characters",
       headerStyle: {
         backgroundColor: COLORS.PRIMARY
       },

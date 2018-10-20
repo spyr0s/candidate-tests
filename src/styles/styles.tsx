@@ -28,6 +28,8 @@ export const ICON_SIZE = {
   big: scale(40)
 };
 
+export const DISABLED_OPACITY = 0.3;
+
 const text = StyleSheet.create({
   normal: {
     fontSize: FONT_SIZE.normal,
@@ -47,6 +49,9 @@ const text = StyleSheet.create({
   bold: {
     color: COLORS.TINT,
     fontWeight: "bold"
+  },
+  disabled: {
+    opacity: 0.3
   }
 });
 

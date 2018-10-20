@@ -5,12 +5,19 @@ import { Query } from "../../services/Api";
 import {
   CharacterAction,
   getCharacters,
-  CharactersResult
+  CharactersResult,
+  setFilters
 } from "../../redux/actions/characters";
 import { RickAndMorty } from "../../app/namespaces";
 import { connect } from "react-redux";
 import Loader from "../../app/Loader";
-import { FlatList, View, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  FlatList,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  BackHandler
+} from "react-native";
 import CharacterItem from "./CharacterItem";
 import { NavigationInjectedProps } from "react-navigation";
 import { CharacterScreenParams } from "../character/Character";
@@ -22,55 +29,77 @@ import LoadingMore from "../../components/LoadingMore";
 
 interface State {
   page: number;
-  filters: { [key: string]: string };
   loadingMore: boolean;
 }
 export interface CharactersScreenProps {
   loading: boolean;
   characters: CharactersResult;
   info: RickAndMorty.ResponseInfo;
+  filters: Query;
   getCharacters: (
     filters: Query,
     page: number,
     append: boolean
   ) => Promise<CharacterAction>;
+  setFilters: (filters: Query) => Promise<CharacterAction>;
 }
 class CharactersScreen extends React.Component<
   CharactersScreenProps & NavigationInjectedProps,
   State
 > {
+  species = [];
   constructor(props) {
     super(props);
     this.state = {
       page: 1,
-      filters: {},
       loadingMore: false
     };
   }
+
   componentDidMount() {
     this.getCharacters(false);
   }
 
   getCharacters(append: boolean): Promise<AnyAction> {
     return this.props.getCharacters(
-      this.state.filters,
+      this.props.filters,
       this.state.page,
       append
     );
   }
 
+  shouldComponentUpdate(
+    nextProps: CharactersScreenProps & NavigationInjectedProps,
+    nextState: State
+  ) {
+    console.log("SHOULD UPDATE", this.props.filters, nextProps.filters);
+    if (
+      nextProps.characters.result !== this.props.characters.result ||
+      nextProps.filters !== this.props.filters
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   render() {
     const hasMore = this.props.info && this.props.info.pages > this.state.page;
+    const filtersColor = !this.hasFilters() ? COLORS.TINT : COLORS.SUCCESS;
+    console.log("RENDER", hasMore, filtersColor);
     return (
       <Container>
         {this.props.info && (
           <View style={charactersScreenStyles.topContainer}>
             <Text>{this.props.info.count} results</Text>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.toggleDrawer();
+              }}
+            >
               <Icon
                 name="filter"
                 type="material-community"
-                color={COLORS.TINT}
+                color={filtersColor}
               />
             </TouchableOpacity>
           </View>
@@ -103,12 +132,33 @@ class CharactersScreen extends React.Component<
     );
   }
 
+  hasFilters(): boolean {
+    const hasFilters =
+      this.props.filters.gender !== null ||
+      this.props.filters.status !== null ||
+      this.props.filters.species !== null;
+    return hasFilters;
+  }
+
   renderItem: any = ({ item }) => {
     const character: RickAndMorty.Character = this.props.characters.entities
       .characters[item];
+    this.species.push(character.species);
     return (
       <CharacterItem
         character={character}
+        onIconPress={(type: string, value: string) => {
+          let filters = this.props.filters;
+          console.log("BEF ",filters);
+          if (filters[type] === value) {
+            filters[type] = null;
+          } else {
+            filters[type] = value;
+          }
+          filters["page"] = 1;
+          console.log("AFTER ",filters);
+          this.props.setFilters(filters);
+        }}
         onPress={() => {
           const params: CharacterScreenParams = { character };
           this.props.navigation.navigate("character", params);
@@ -120,8 +170,9 @@ class CharactersScreen extends React.Component<
 
 function mapDispatchToProps(dispatch) {
   return {
-    getCharacters: (filter: Query, page: number, append: boolean) =>
-      dispatch(getCharacters(filter, page, append))
+    getCharacters: (filters: Query, page: number, append: boolean) =>
+      dispatch(getCharacters(filters, page, append)),
+    setFilters: (filters: Query) => dispatch(setFilters(filters))
   };
 }
 
@@ -129,6 +180,7 @@ function mapStateToProps(state) {
   return {
     characters: state.charactersReducer.characters,
     info: state.charactersReducer.info,
+    filters: state.charactersReducer.filters,
     loading: state.charactersReducer.loading
   };
 }

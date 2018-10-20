@@ -17,16 +17,16 @@ export default class Api extends Http {
   createUrlQuery(query: Query) {
     let q = [];
     Object.keys(query).forEach((key: string) => {
-      q.push(key + "=" + query[key]);
+      query[key] !== null && q.push(key + "=" + query[key]);
     });
     return q.length === 0 ? "" : "?" + q.join("&");
   }
 
-  getCharacters(filter: Query = null, page?: number): Promise<HttpResponse> {
+  getCharacters(filters: Query = null, page?: number): Promise<HttpResponse> {
     if (page) {
-      filter["page"] = page;
+      filters["page"] = page;
     }
-    const filterQuery = filter !== null ? this.createUrlQuery(filter) : "";
+    const filterQuery = filters !== null ? this.createUrlQuery(filters) : "";
     const url = Api.ENDPOINT + "character/" + filterQuery;
     return this.getRequest(url);
   }

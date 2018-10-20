@@ -1,22 +1,42 @@
 import React from "react";
+import { View } from "react-native";
+import { Avatar, ListItem } from "react-native-elements";
 import { RickAndMorty } from "../../app/namespaces";
-import { ListItem, Avatar } from "react-native-elements";
 import { list } from "../../styles/styles";
 import { Gender } from "./Gender";
-import { View } from "react-native";
+import { Species } from "./Species";
 import { Status } from "./Status";
-import Text from "../../components/Text";
 
 export interface CharacterProps {
   character: RickAndMorty.Character;
   onPress?: () => void;
+  onIconPress?: (type: string, value: string) => void;
 }
 export default class CharacterItem extends React.PureComponent<CharacterProps> {
   render() {
     const character = this.props.character;
     const icons = [
-      <Gender key="gender" gender={character.gender} />,
-      <Status key="status" status={character.status} />
+      <Species
+        key="species"
+        species={character.species}
+        onPress={() => {
+          this.props.onIconPress("species", character.species);
+        }}
+      />,
+      <Gender
+        key="gender"
+        gender={character.gender}
+        onPress={() => {
+          this.props.onIconPress("gender", character.gender);
+        }}
+      />,
+      <Status
+        key="status"
+        status={character.status}
+        onPress={() => {
+          this.props.onIconPress("status", character.status);
+        }}
+      />
     ];
     return (
       <ListItem
@@ -24,7 +44,9 @@ export default class CharacterItem extends React.PureComponent<CharacterProps> {
         containerStyle={list.container}
         titleStyle={list.title}
         subtitleStyle={list.subtitle}
-        leftAvatar={<Avatar source={{ uri: character.image }} rounded />}
+        leftAvatar={
+          <Avatar size="medium" source={{ uri: character.image }} rounded />
+        }
         title={character.name}
         subtitle={<View style={{ flexDirection: "row" }}>{icons}</View>}
         chevron

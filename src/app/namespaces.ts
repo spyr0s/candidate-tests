@@ -26,7 +26,19 @@ export namespace RickAndMorty {
     id: number;
     name: string;
     status: "Alive" | "Dead" | "unknown";
-    species: string;
+    species:
+      | "Alien"
+      | "Animal"
+      | "Cronenberg"
+      | "Disease"
+      | "Human"
+      | "Humanoid"
+      | "Mytholog"
+      | "Parasite"
+      | "Poopybutthole"
+      | "Robot"
+      | "Vampire"
+      | "unknown";
     type: string;
     gender: "Female" | "Male" | "Genderless" | "unknown";
     origin: Origin;
