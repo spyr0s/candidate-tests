@@ -17,7 +17,10 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  LayoutAnimation
+  LayoutAnimation,
+  BackHandler,
+  Alert,
+  ToastAndroid
 } from "react-native";
 import CharacterItem from "./CharacterItem";
 import { NavigationInjectedProps } from "react-navigation";
@@ -47,7 +50,7 @@ class CharactersScreen extends React.Component<
   CharactersScreenProps & NavigationInjectedProps,
   State
 > {
-  species = [];
+  exit: boolean = false;
   constructor(props) {
     super(props);
     this.state = {
@@ -57,7 +60,29 @@ class CharactersScreen extends React.Component<
 
   componentDidMount() {
     this.getCharacters(false);
+    BackHandler.addEventListener("hardwareBackPress", this.handleBackPress);
   }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener("hardwareBackPress", this.handleBackPress);
+  }
+
+  handleBackPress = () => {
+    const isFocused = this.props.navigation.isFocused();
+    if (!isFocused) {
+      this.props.navigation.goBack(null);
+      return true;
+    }
+    if (this.exit === true) {
+      return false;
+    }
+    this.exit = true;
+    ToastAndroid.show("Press back again to exit", 3000);
+    setTimeout(() => {
+      this.exit = false;
+    }, 3000);
+    return true;
+  };
 
   componentWillUpdate(
     nextProps: CharactersScreenProps & NavigationInjectedProps
@@ -159,7 +184,7 @@ class CharactersScreen extends React.Component<
   renderItem: any = ({ item }) => {
     const character: RickAndMorty.Character = this.props.characters.entities
       .characters[item];
-    this.species.push(character.species);
+
     return (
       <CharacterItem
         character={character}

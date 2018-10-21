@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import { Icon } from "react-native-elements";
 
-import { View, StyleSheet, BackHandler, Modal, ScrollView } from "react-native";
+import { View, StyleSheet, Modal, ScrollView } from "react-native";
 import { COLORS } from "../../styles";
 import {
   SPACING,
@@ -21,18 +21,6 @@ export interface HelpModalProps {
   onClose: () => void;
 }
 export default class HelpModal extends React.Component<HelpModalProps> {
-  componentDidMount() {
-    BackHandler.addEventListener("hardwareBackPress", this.handleBackPress);
-  }
-
-  componentWillUnmount() {
-    BackHandler.removeEventListener("hardwareBackPress", this.handleBackPress);
-  }
-
-  handleBackPress = () => {
-    this.props.onClose();
-    return true;
-  };
 
   render() {
     let gendersHelp: Array<ReactElement<Gender>> = [];

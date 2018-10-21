@@ -7,11 +7,10 @@ import {
   Image,
   ScrollView,
   Animated,
-  Dimensions,
-  BackHandler,
+  Dimensions
 } from "react-native";
-import { ListItem } from "react-native-elements";
-import { list } from "../../styles/styles";
+import { ListItem, Avatar } from "react-native-elements";
+import { list, SPACING } from "../../styles/styles";
 import { Gender } from "../../components/character/Gender";
 import { Status } from "../../components/character/Status";
 import { scale } from "../../styles/scaling";
@@ -32,19 +31,7 @@ export default class CharacterScreen extends React.Component<
     this.animatedHeaderValue = new Animated.Value(0);
   }
 
-  componentDidMount() {
-    BackHandler.addEventListener("hardwareBackPress", this.handleBackPress);
-  }
-
-  componentWillUnmount() {
-    BackHandler.removeEventListener("hardwareBackPress", this.handleBackPress);
-  }
-
-  handleBackPress = () => {
-    this.props.navigation.goBack(null);
-    return true;
-  };
-
+  
   static navigationOptions = ({ navigation }) => {
     const character: RickAndMorty.Character = navigation.getParam("character");
     return {
@@ -59,14 +46,14 @@ export default class CharacterScreen extends React.Component<
     const width = Dimensions.get("window").width;
     const height = width;
     const HEADER_MAX_HEIGHT = height;
-    const HEADER_MIN_HEIGHT = scale(65);
+    const HEADER_MIN_HEIGHT = scale(height * 0.2);
     const AnimatedHeaderOpacity = this.animatedHeaderValue.interpolate({
       inputRange: [
         0,
         HEADER_MAX_HEIGHT / 2,
         HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT
       ],
-      outputRange: [1, 0.7, 1],
+      outputRange: [1, 0.7, 0],
       extrapolate: "clamp"
     });
     const AnimateHeaderHeight = this.animatedHeaderValue.interpolate({
@@ -75,6 +62,15 @@ export default class CharacterScreen extends React.Component<
       extrapolate: "clamp"
     });
 
+    const AnimatedAltHeaderOpacity = this.animatedHeaderValue.interpolate({
+      inputRange: [
+        HEADER_MIN_HEIGHT,
+        HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT - 10,
+        HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT
+      ],
+      outputRange: [0, 0.2, 1],
+      extrapolate: "clamp"
+    });
     return (
       <Container>
         <ScrollView
@@ -132,6 +128,27 @@ export default class CharacterScreen extends React.Component<
           <Image
             style={{ width, height, backgroundColor: COLORS.DARK }}
             source={{ uri: character.image }}
+          />
+        </Animated.View>
+        <Animated.View
+          style={[
+            {
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: 0,
+              opacity: AnimatedAltHeaderOpacity,
+              backgroundColor: COLORS.BACKGROUND,
+              alignItems: "center",
+              padding: SPACING.medium
+            }
+          ]}
+        >
+          <Avatar
+            size="medium"
+            rounded
+            source={{ uri: character.image }}
+            containerStyle={{}}
           />
         </Animated.View>
       </Container>

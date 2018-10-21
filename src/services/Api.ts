@@ -24,12 +24,6 @@ export default class Api extends Http {
   getCharacters(filters: Query = null): Promise<HttpResponse> {
     const filterQuery = filters !== null ? this.createUrlQuery(filters) : "";
     const url = Api.ENDPOINT + "character/" + filterQuery;
-    console.log(url);
-    return this.getRequest(url);
-  }
-
-  getCharacter(id: number): Promise<HttpResponse> {
-    const url = Api.ENDPOINT + "character/" + id;
     return this.getRequest(url);
   }
 }
