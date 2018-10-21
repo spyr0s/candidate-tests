@@ -24,10 +24,11 @@ import { Status } from "../characters/Status";
 import { Species } from "../characters/Species";
 import HelpModal from "./HelpModal";
 import { Query } from "../../services/Api";
-import { setFilters, CharacterAction } from "../../redux/actions/characters";
+import { setFilters, CharacterAction, resetFilters } from "../../redux/actions/characters";
 export interface Props {
   filters: Query;
   setFilters: (filters: Query) => Promise<CharacterAction>;
+  resetFilters: () => Promise<CharacterAction>;
 }
 
 interface State {
@@ -51,6 +52,15 @@ class FiltersMenu extends React.Component<
         <View style={filterStyles.headerContainer}>
           <Text style={filterStyles.header}>Filters</Text>
           <TouchableOpacity
+            style={filterStyles.action}
+            onPress={() => {
+              this.props.resetFilters()
+            }}
+          >
+            <Icon type="font-awesome" name="remove" color={COLORS.ERROR} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={filterStyles.action}
             onPress={() => {
               this.setState({ showHelpModal: true });
             }}
@@ -107,22 +117,70 @@ class FiltersMenu extends React.Component<
           <Text style={filterStyles.labelName}>Species</Text>
         </View>
         <View style={filterStyles.filterContainer}>
-          <Species species="Human" style={filterStyles.button}  selected={filters.species === "Human"}/>
-          <Species species="Alien" style={filterStyles.button}  selected={filters.species === "Alien"}/>
-          <Species species="Humanoid" style={filterStyles.button}  selected={filters.species === "Humanoid"}/>
-          <Species species="Cronenberg" style={filterStyles.button}  selected={filters.species === "Cronenberg"}/>
+          <Species
+            species="Human"
+            style={filterStyles.button}
+            selected={filters.species === "Human"}
+          />
+          <Species
+            species="Alien"
+            style={filterStyles.button}
+            selected={filters.species === "Alien"}
+          />
+          <Species
+            species="Humanoid"
+            style={filterStyles.button}
+            selected={filters.species === "Humanoid"}
+          />
+          <Species
+            species="Cronenberg"
+            style={filterStyles.button}
+            selected={filters.species === "Cronenberg"}
+          />
         </View>
         <View style={filterStyles.filterContainer}>
-          <Species species="Disease" style={filterStyles.button}  selected={filters.species === "Disease"}/>
-          <Species species="Mytholog" style={filterStyles.button}  selected={filters.species === "Mytholog"}/>
-          <Species species="Robot" style={filterStyles.button}  selected={filters.species === "Robot"}/>
-          <Species species="Poopybutthole" style={filterStyles.button}  selected={filters.species === "Poopybutthole"}/>
+          <Species
+            species="Disease"
+            style={filterStyles.button}
+            selected={filters.species === "Disease"}
+          />
+          <Species
+            species="Mytholog"
+            style={filterStyles.button}
+            selected={filters.species === "Mytholog"}
+          />
+          <Species
+            species="Robot"
+            style={filterStyles.button}
+            selected={filters.species === "Robot"}
+          />
+          <Species
+            species="Poopybutthole"
+            style={filterStyles.button}
+            selected={filters.species === "Poopybutthole"}
+          />
         </View>
         <View style={filterStyles.filterContainer}>
-          <Species species="Animal" style={filterStyles.button}  selected={filters.species === "Animal"}/>
-          <Species species="Parasite" style={filterStyles.button}  selected={filters.species === "Parasite"}/>
-          <Species species="Vampire" style={filterStyles.button}  selected={filters.species === "Vampire"}/>
-          <Species species="unknown" style={filterStyles.button}  selected={filters.species === "unknown"}/>
+          <Species
+            species="Animal"
+            style={filterStyles.button}
+            selected={filters.species === "Animal"}
+          />
+          <Species
+            species="Parasite"
+            style={filterStyles.button}
+            selected={filters.species === "Parasite"}
+          />
+          <Species
+            species="Vampire"
+            style={filterStyles.button}
+            selected={filters.species === "Vampire"}
+          />
+          <Species
+            species="unknown"
+            style={filterStyles.button}
+            selected={filters.species === "unknown"}
+          />
         </View>
         <HelpModal
           key="help"
@@ -139,7 +197,8 @@ class FiltersMenu extends React.Component<
 
 function mapDispatchToProps(dispatch) {
   return {
-    setFilters: (filters: Query) => dispatch(setFilters(filters))
+    setFilters: (filters: Query) => dispatch(setFilters(filters)),
+    resetFilters: () => dispatch(resetFilters()),
   };
 }
 
@@ -168,10 +227,15 @@ export const filterStyles = StyleSheet.create({
     borderBottomWidth: 1
   },
   header: {
-    flex: 5,
+    flex: 0.8,
     textAlign: "center",
     fontSize: FONT_SIZE.larger,
+    fontWeight:"600",
     color: COLORS.TINT
+  },
+  action: {
+    flex: 0.1,
+    marginHorizontal: SPACING.medium
   },
   labelContainer: {
     paddingVertical: SPACING.medium

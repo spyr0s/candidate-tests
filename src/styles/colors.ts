@@ -1,5 +1,6 @@
 import tinycolor from "tinycolor2";
 
+const TRANSPARENT = "transparent";
 const PRIMARY = "#261315";
 const BACKGROUND = tinycolor(PRIMARY)
   .darken(25)
@@ -21,6 +22,7 @@ const OVERLAY = tinycolor(DARK)
   .toString();
 
 export default {
+  TRANSPARENT: TRANSPARENT,
   BACKGROUND: BACKGROUND,
   DISCREET: DISCREET,
   DARK: DARK,

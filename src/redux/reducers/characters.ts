@@ -3,6 +3,7 @@ import {
   GET_CHARACTERS_SUCCESS,
   GET_CHARACTERS_ERROR,
   SET_CHARACTERS_FILTERS_SUCCESS,
+  RESET_CHARACTERS_FILTERS_SUCCESS,
   CharacterAction
 } from "../actions/characters";
 
@@ -45,6 +46,11 @@ export function charactersReducer(
         info: action.info,
         characters,
         loading: false
+      };
+    case RESET_CHARACTERS_FILTERS_SUCCESS:
+      return {
+        ...state,
+        filters: action.filters
       };
     case SET_CHARACTERS_FILTERS_SUCCESS:
       return {

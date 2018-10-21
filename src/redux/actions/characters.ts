@@ -9,7 +9,8 @@ export const GET_CHARACTERS_SUCCESS = "GET_CHARACTERS_SUCCESS";
 export const GET_CHARACTERS_ERROR = "GET_CHARACTERS_ERROR";
 
 export const SET_CHARACTERS_FILTERS_SUCCESS = "SET_CHARACTERS_FILTERS_SUCCESS";
-
+export const RESET_CHARACTERS_FILTERS_SUCCESS =
+  "RESET_CHARACTERS_FILTERS_SUCCESS";
 export interface CharactersResult {
   entities: { characters: { [key: number]: RickAndMorty.Character } };
   result: Array<number>;
@@ -81,5 +82,19 @@ function setFiltersSuccess(filters) {
 export function setFilters(filters: Query) {
   return function(dispatch) {
     return dispatch(setFiltersSuccess(filters));
+  };
+}
+
+/*************** RESET FILTERS ***************/
+function resetFiltersSuccess(filters: Query) {
+  return {
+    type: RESET_CHARACTERS_FILTERS_SUCCESS,
+    filters
+  };
+}
+export function resetFilters() {
+  return function(dispatch) {
+    const filters = { page: 1, gender: null, status: null, species: null };
+    return dispatch(resetFiltersSuccess(filters));
   };
 }

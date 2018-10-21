@@ -86,7 +86,9 @@ const genderStyles = StyleSheet.create({
   },
   icon: {
     textAlign: "center",
-    padding: 2
+    padding: 2,
+    borderColor: COLORS.TRANSPARENT,
+    borderWidth: 1,
   },
   selected: {
     borderColor: COLORS.DISCREET,
