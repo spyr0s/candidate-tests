@@ -20,13 +20,5 @@ export default function configureStore(initialState) {
     store = createStore(rootReducer, initialState, applyMiddleware(thunk));
   }
 
-  //   if (__DEV__ && module.hot) {
-  //     // Enable Webpack hot module replacement for reducers
-  //     module.hot.accept("../redux/index", () => {
-  //       const nextRootReducer = require("../redux/index");
-  //       store.replaceReducer(nextRootReducer);
-  //     });
-  //   }
-
   return store;
 }

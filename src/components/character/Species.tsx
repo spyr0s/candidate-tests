@@ -38,7 +38,7 @@ export class Species extends React.PureComponent<
       case "Alien":
         return {
           name: "alien",
-          color: COLORS.DISCREET,
+          color: COLORS.SUCCESS,
           type: "material-community"
         };
       case "Animal":
@@ -68,7 +68,7 @@ export class Species extends React.PureComponent<
       case "Humanoid":
         return {
           name: "human-child",
-          color: COLORS.DISCREET,
+          color: COLORS.TINT,
           type: "material-community"
         };
       case "Mytholog":
@@ -92,7 +92,7 @@ export class Species extends React.PureComponent<
       case "Robot":
         return {
           name: "robot",
-          color: COLORS.DISCREET,
+          color: COLORS.LIGHT,
           type: "material-community"
         };
       case "unknown":
