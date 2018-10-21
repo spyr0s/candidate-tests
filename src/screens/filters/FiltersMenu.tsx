@@ -1,13 +1,6 @@
-import React from "react";
-import {
-  NavigationInjectedProps
-} from "react-navigation";
-import {
-  ScrollView,
-  View,
-  TouchableOpacity,
-  StyleSheet
-} from "react-native";
+import React, { ReactElement } from "react";
+import { NavigationInjectedProps } from "react-navigation";
+import { ScrollView, View, TouchableOpacity, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { COLORS } from "../../styles";
 import { Icon } from "react-native-elements";
@@ -18,7 +11,15 @@ import { Status } from "../../components/character/Status";
 import { Species } from "../../components/character/Species";
 import HelpModal from "./HelpModal";
 import { Query } from "../../services/Api";
-import { setFilters, CharacterAction, resetFilters } from "../../redux/actions/characters";
+import {
+  setFilters,
+  CharacterAction,
+  resetFilters,
+  SET_CHARACTERS_FILTERS_SUCCESS,
+  getCharacters,
+  RESET_CHARACTERS_FILTERS_SUCCESS
+} from "../../redux/actions/characters";
+import { store } from "../../../App";
 export interface Props {
   filters: Query;
   setFilters: (filters: Query) => Promise<CharacterAction>;
@@ -41,6 +42,81 @@ class FiltersMenu extends React.Component<
   }
   render() {
     const filters = this.props.filters;
+    let genderFilters: Array<ReactElement<Gender>> = [];
+    let statusFilters: Array<ReactElement<Status>> = [];
+    let speciesFilters: Array<ReactElement<Species>> = [];
+    ["Male", "Female", "Genderless", "unknown"].forEach(
+      (gender: "Male" | "Female" | "Genderless" | "unknown") => {
+        genderFilters.push(
+          <Gender
+            key={gender}
+            gender={gender}
+            style={filterStyles.button}
+            selected={filters.gender === gender}
+            onPress={() => {
+              this.setFilters("gender", gender);
+            }}
+          />
+        );
+      }
+    );
+    ["Alive", "Dead", "unknown"].forEach(
+      (status: "Alive" | "Dead" | "unknown") => {
+        statusFilters.push(
+          <Status
+            key={status}
+            status={status}
+            style={filterStyles.button}
+            selected={filters.status === status}
+            onPress={() => {
+              this.setFilters("status", status);
+            }}
+          />
+        );
+      }
+    );
+    [
+      "Alien",
+      "Animal",
+      "Cronenberg",
+      "Disease",
+      "Human",
+      "Humanoid",
+      "Mytholog",
+      "Parasite",
+      "Poopybutthole",
+      "Robot",
+      "Vampire",
+      "unknown"
+    ].forEach(
+      (
+        species:
+          | "Alien"
+          | "Animal"
+          | "Cronenberg"
+          | "Disease"
+          | "Human"
+          | "Humanoid"
+          | "Mytholog"
+          | "Parasite"
+          | "Poopybutthole"
+          | "Robot"
+          | "Vampire"
+          | "unknown"
+      ) => {
+        speciesFilters.push(
+          <Species
+            key={species}
+            species={species}
+            style={filterStyles.button}
+            selected={filters.species === species}
+            onPress={() => {
+              this.setFilters("species", species);
+            }}
+          />
+        );
+      }
+    );
     return (
       <ScrollView style={filterStyles.container}>
         <View style={filterStyles.headerContainer}>
@@ -48,7 +124,7 @@ class FiltersMenu extends React.Component<
           <TouchableOpacity
             style={filterStyles.action}
             onPress={() => {
-              this.props.resetFilters()
+              this.resetFilters();
             }}
           >
             <Icon type="font-awesome" name="remove" color={COLORS.ERROR} />
@@ -65,117 +141,15 @@ class FiltersMenu extends React.Component<
         <View style={filterStyles.labelContainer}>
           <Text style={filterStyles.labelName}>Gender</Text>
         </View>
-        <View style={filterStyles.filterContainer}>
-          <Gender
-            gender="Male"
-            style={filterStyles.button}
-            selected={filters.gender === "Male"}
-          />
-          <Gender
-            gender="Female"
-            style={filterStyles.button}
-            selected={filters.gender === "Female"}
-          />
-          <Gender
-            gender="Genderless"
-            style={filterStyles.button}
-            selected={filters.gender === "Genderless"}
-          />
-          <Gender
-            gender="unknown"
-            style={filterStyles.button}
-            selected={filters.gender === "unknown"}
-          />
-        </View>
+        <View style={filterStyles.filterContainer}>{genderFilters}</View>
         <View style={filterStyles.labelContainer}>
           <Text style={filterStyles.labelName}>Status</Text>
         </View>
-        <View style={filterStyles.filterContainer}>
-          <Status
-            status="Alive"
-            style={filterStyles.button}
-            selected={filters.status === "Alive"}
-          />
-          <Status
-            status="Dead"
-            style={filterStyles.button}
-            selected={filters.status === "Dead"}
-          />
-          <Status
-            status="unknown"
-            style={filterStyles.button}
-            selected={filters.status === "unknown"}
-          />
-        </View>
+        <View style={filterStyles.filterContainer}>{statusFilters}</View>
         <View style={filterStyles.labelContainer}>
           <Text style={filterStyles.labelName}>Species</Text>
         </View>
-        <View style={filterStyles.filterContainer}>
-          <Species
-            species="Human"
-            style={filterStyles.button}
-            selected={filters.species === "Human"}
-          />
-          <Species
-            species="Alien"
-            style={filterStyles.button}
-            selected={filters.species === "Alien"}
-          />
-          <Species
-            species="Humanoid"
-            style={filterStyles.button}
-            selected={filters.species === "Humanoid"}
-          />
-          <Species
-            species="Cronenberg"
-            style={filterStyles.button}
-            selected={filters.species === "Cronenberg"}
-          />
-        </View>
-        <View style={filterStyles.filterContainer}>
-          <Species
-            species="Disease"
-            style={filterStyles.button}
-            selected={filters.species === "Disease"}
-          />
-          <Species
-            species="Mytholog"
-            style={filterStyles.button}
-            selected={filters.species === "Mytholog"}
-          />
-          <Species
-            species="Robot"
-            style={filterStyles.button}
-            selected={filters.species === "Robot"}
-          />
-          <Species
-            species="Poopybutthole"
-            style={filterStyles.button}
-            selected={filters.species === "Poopybutthole"}
-          />
-        </View>
-        <View style={filterStyles.filterContainer}>
-          <Species
-            species="Animal"
-            style={filterStyles.button}
-            selected={filters.species === "Animal"}
-          />
-          <Species
-            species="Parasite"
-            style={filterStyles.button}
-            selected={filters.species === "Parasite"}
-          />
-          <Species
-            species="Vampire"
-            style={filterStyles.button}
-            selected={filters.species === "Vampire"}
-          />
-          <Species
-            species="unknown"
-            style={filterStyles.button}
-            selected={filters.species === "unknown"}
-          />
-        </View>
+        <View style={filterStyles.filterContainer}>{speciesFilters}</View>
         <HelpModal
           key="help"
           onClose={() => {
@@ -187,12 +161,45 @@ class FiltersMenu extends React.Component<
       </ScrollView>
     );
   }
+
+  resetFilters() {
+    this.props
+      .resetFilters()
+      .then((action: CharacterAction) => {
+        if (action.type === RESET_CHARACTERS_FILTERS_SUCCESS) {
+          this.props.navigation.closeDrawer();
+          const filters = action.filters;
+          store.dispatch(getCharacters(filters, false));
+        }
+      })
+      .catch(e => console.error(e));
+  }
+
+  setFilters(type, value) {
+    let filters = this.props.filters;
+    if (filters[type] === value) {
+      filters[type] = null;
+    } else {
+      filters[type] = value;
+    }
+    filters["page"] = 1;
+    this.props
+      .setFilters(filters)
+      .then((action: CharacterAction) => {
+        if (action.type === SET_CHARACTERS_FILTERS_SUCCESS) {
+          this.props.navigation.closeDrawer();
+          const filters = action.filters;
+          store.dispatch(getCharacters(filters, false));
+        }
+      })
+      .catch(e => console.error(e));
+  }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     setFilters: (filters: Query) => dispatch(setFilters(filters)),
-    resetFilters: () => dispatch(resetFilters()),
+    resetFilters: () => dispatch(resetFilters())
   };
 }
 
@@ -224,7 +231,7 @@ export const filterStyles = StyleSheet.create({
     flex: 0.8,
     textAlign: "center",
     fontSize: FONT_SIZE.larger,
-    fontWeight:"600",
+    fontWeight: "600",
     color: COLORS.TINT
   },
   action: {

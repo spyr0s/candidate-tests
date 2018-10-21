@@ -30,7 +30,6 @@ export class Type extends React.PureComponent<
     const selected = this.props.selected ? typeStyles.selected : null;
     return (
       <TouchableOpacity
-        disabled={this.props.selected}
         onPress={() => {
           this.props.onPress;
         }}

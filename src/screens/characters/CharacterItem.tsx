@@ -7,12 +7,12 @@ import { Gender } from "../../components/character/Gender";
 import { Species } from "../../components/character/Species";
 import { Status } from "../../components/character/Status";
 
-export interface CharacterProps {
+export interface CharacterItemProps {
   character: RickAndMorty.Character;
   onPress?: () => void;
   onIconPress?: (type: string, value: string) => void;
 }
-export default class CharacterItem extends React.PureComponent<CharacterProps> {
+export default class CharacterItem extends React.PureComponent<CharacterItemProps> {
   render() {
     const character = this.props.character;
     const icons = [

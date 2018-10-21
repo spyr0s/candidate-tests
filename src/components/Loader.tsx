@@ -3,9 +3,9 @@ import React from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { COLORS } from "../styles";
 import { FONT_SIZE } from "../styles/styles";
-import Text from "../components/Text";
+import Text from "./Text";
 
-export interface Props {
+export interface LoaderProps {
   visible: boolean;
   text?: string;
 }
@@ -13,9 +13,9 @@ export interface Props {
 interface State {
   visible: boolean;
 }
-const LOADER_DELAY = 800;
+const LOADER_DELAY = 300;
 
-export default class Loader extends React.Component<Props, State> {
+export default class Loader extends React.Component<LoaderProps, State> {
   timerId = null;
   constructor(props) {
     super(props);
@@ -24,17 +24,22 @@ export default class Loader extends React.Component<Props, State> {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: LoaderProps) {
+    console.log("PROPS COMING", this.props, nextProps);
     if (this.props !== nextProps) {
       if (this.props.visible !== nextProps.visible) {
         if (nextProps.visible === false) {
+          console.log("HIDE PROP COMING");
           this.setState({ visible: nextProps.visible });
           if (this.timerId !== null) {
+            console.log("TIMED OUT");
             clearTimeout(this.timerId);
             this.timerId = null;
           }
         } else {
+          console.log("SHOW PROP COMING");
           this.timerId = setTimeout(() => {
+            console.log("TIME OUT PASSED - SHOWING");
             this.setState({ visible: nextProps.visible });
           }, LOADER_DELAY);
         }

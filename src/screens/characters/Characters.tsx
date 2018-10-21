@@ -6,24 +6,22 @@ import {
   CharacterAction,
   getCharacters,
   CharactersResult,
-  setFilters
+  setFilters,
+  SET_CHARACTERS_FILTERS_SUCCESS
 } from "../../redux/actions/characters";
 import { RickAndMorty } from "../../app/namespaces";
 import { connect } from "react-redux";
-import Loader from "../../app/Loader";
-import {
-  FlatList,
-  View,
-  StyleSheet,
-  TouchableOpacity} from "react-native";
+import Loader from "../../components/Loader";
+import { FlatList, View, StyleSheet, TouchableOpacity } from "react-native";
 import CharacterItem from "./CharacterItem";
 import { NavigationInjectedProps } from "react-navigation";
 import { CharacterScreenParams } from "../character/Character";
-import { SPACING } from "../../styles/styles";
+import { SPACING, FONT_SIZE } from "../../styles/styles";
 import { Icon } from "react-native-elements";
 import { COLORS } from "../../styles";
 import { AnyAction } from "redux";
 import LoadingMore from "../../components/LoadingMore";
+import { store } from "../../../App";
 
 interface State {
   page: number;
@@ -34,11 +32,7 @@ export interface CharactersScreenProps {
   characters: CharactersResult;
   info: RickAndMorty.ResponseInfo;
   filters: Query;
-  getCharacters: (
-    filters: Query,
-    page: number,
-    append: boolean
-  ) => Promise<CharacterAction>;
+  getCharacters: (filters: Query, append: boolean) => Promise<CharacterAction>;
   setFilters: (filters: Query) => Promise<CharacterAction>;
 }
 class CharactersScreen extends React.Component<
@@ -59,24 +53,9 @@ class CharactersScreen extends React.Component<
   }
 
   getCharacters(append: boolean): Promise<AnyAction> {
-    return this.props.getCharacters(
-      this.props.filters,
-      this.state.page,
-      append
-    );
-  }
-
-  shouldComponentUpdate(
-    nextProps: CharactersScreenProps & NavigationInjectedProps,
-    nextState: State
-  ) {
-    if (
-      nextProps.characters.result !== this.props.characters.result ||
-      nextProps.filters !== this.props.filters
-    ) {
-      return true;
-    }
-    return false;
+    const filters = this.props.filters;
+    filters["page"] = this.state.page;
+    return this.props.getCharacters(filters, append);
   }
 
   render() {
@@ -86,7 +65,10 @@ class CharactersScreen extends React.Component<
       <Container>
         {this.props.info && (
           <View style={charactersScreenStyles.topContainer}>
-            <Text>{this.props.info.count} results</Text>
+            <Text>
+              {this.props.info.count} results ({this.props.filters.page} of{" "}
+              {this.props.info.pages} pages)
+            </Text>
             <TouchableOpacity
               onPress={() => {
                 this.props.navigation.toggleDrawer();
@@ -104,6 +86,11 @@ class CharactersScreen extends React.Component<
           data={this.props.characters.result}
           keyExtractor={(item: number) => item.toString()}
           renderItem={this.renderItem}
+          ListEmptyComponent={
+            <Text style={charactersScreenStyles.emptyResults}>
+              No results found
+            </Text>
+          }
           onEndReached={() => {
             this.setState(
               { loadingMore: true, page: this.state.page + 1 },
@@ -123,7 +110,7 @@ class CharactersScreen extends React.Component<
             ) : null
           }
         />
-        <Loader visible={this.props.loading} />
+        <Loader visible={this.props.loading && !this.state.loadingMore} />
       </Container>
     );
   }
@@ -151,7 +138,7 @@ class CharactersScreen extends React.Component<
             filters[type] = value;
           }
           filters["page"] = 1;
-          this.props.setFilters(filters);
+          this.changeFilters(filters);
         }}
         onPress={() => {
           const params: CharacterScreenParams = { character };
@@ -160,12 +147,23 @@ class CharactersScreen extends React.Component<
       />
     );
   };
+
+  changeFilters(filters) {
+    this.props
+      .setFilters(filters)
+      .then((action: CharacterAction) => {
+        if (action.type === SET_CHARACTERS_FILTERS_SUCCESS) {
+          store.dispatch(getCharacters(filters, false));
+        }
+      })
+      .catch(e => console.error(e));
+  }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    getCharacters: (filters: Query, page: number, append: boolean) =>
-      dispatch(getCharacters(filters, page, append)),
+    getCharacters: (filters: Query, append: boolean) =>
+      dispatch(getCharacters(filters, append)),
     setFilters: (filters: Query) => dispatch(setFilters(filters))
   };
 }
@@ -191,5 +189,11 @@ const charactersScreenStyles = StyleSheet.create({
     padding: SPACING.medium,
     borderBottomColor: COLORS.TINT,
     borderBottomWidth: 1
+  },
+  emptyResults: {
+    fontSize: FONT_SIZE.large,
+    fontWeight: "600",
+    textAlign: "center",
+    padding: SPACING.large
   }
 });

@@ -12,20 +12,23 @@ export function charactersReducer(
     loading: false,
     characters: {
       entities: { characters: {} },
-      result: [],
-      info: { count: 0, pages: 0, next: "", previous: "" }
+      result: []
     },
+    info: { count: 0, pages: 0, next: "", previous: "" },
     filters: { page: 1, gender: null, species: null, status: null }
   },
   action: CharacterAction
 ) {
   switch (action.type) {
     case GET_CHARACTERS_REQUEST:
+      console.log("CHAR REQUEST");
       return {
         ...state,
         loading: true
       };
     case GET_CHARACTERS_SUCCESS:
+      console.log("CHAR SUCCESS", action.characters);
+
       let characters;
       if (action.append) {
         characters = {
@@ -60,6 +63,11 @@ export function charactersReducer(
     case GET_CHARACTERS_ERROR:
       return {
         ...state,
+        characters: {
+          entities: { characters: {} },
+          result: []
+        },
+        info: { count: 0, pages: 0, next: "", previous: "" },
         loading: false
       };
     default:

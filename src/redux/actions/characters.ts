@@ -52,20 +52,16 @@ function getCharactersError(error: any): CharacterAction {
   };
 }
 
-export function getCharacters(
-  filters: Query = null,
-  page: number = 1,
-  append: boolean = true
-) {
+export function getCharacters(filters: Query = null, append: boolean = true) {
   return function(dispatch) {
     dispatch(getCharactersRequest());
     return new Api()
-      .getCharacters(filters, page)
+      .getCharacters(filters)
       .then((response: HttpResponse) => {
         const data: RickAndMorty.Response = response.data;
         const info = data.info;
         const characters: Array<RickAndMorty.Character> = data.results;
-        dispatch(getCharactersSuccess(info, characters, append));
+        return dispatch(getCharactersSuccess(info, characters, append));
       })
       .catch(e => dispatch(getCharactersError(e)));
   };
@@ -79,8 +75,11 @@ function setFiltersSuccess(filters) {
   };
 }
 export function setFilters(filters: Query) {
+  filters["page"] = 1;
   return function(dispatch) {
-    return dispatch(setFiltersSuccess(filters));
+    return new Promise(resolve => {
+      resolve(dispatch(setFiltersSuccess(filters)));
+    });
   };
 }
 
@@ -94,6 +93,8 @@ function resetFiltersSuccess(filters: Query) {
 export function resetFilters() {
   return function(dispatch) {
     const filters = { page: 1, gender: null, status: null, species: null };
-    return dispatch(resetFiltersSuccess(filters));
+    return new Promise(resolve => {
+      resolve(dispatch(resetFiltersSuccess(filters)));
+    });
   };
 }
