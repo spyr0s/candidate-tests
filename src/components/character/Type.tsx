@@ -1,7 +1,7 @@
 import React from "react";
 import { Icon } from "react-native-elements";
 import { COLORS } from "../../styles";
-import { SPACING } from "../../styles/styles";
+import { SPACING, LINE_HEIGHT } from "../../styles/styles";
 import Text from "../Text";
 import {
   TouchableOpacity,
@@ -44,7 +44,9 @@ export class Type extends React.PureComponent<
           color={this.props.typeProps.color}
           containerStyle={typeStyles.iconContainer}
         />
-        {this.props.showLabel && <Text>{this.props.value}</Text>}
+        {this.props.showLabel && (
+          <Text style={typeStyles.label}>{this.props.value}</Text>
+        )}
       </TouchableOpacity>
     );
   }
@@ -52,7 +54,8 @@ export class Type extends React.PureComponent<
 const typeStyles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    marginTop: SPACING.small
+    alignItems: "center",
+    alignContent: "center"
   },
   iconContainer: {
     alignSelf: "flex-start",
@@ -68,5 +71,8 @@ const typeStyles = StyleSheet.create({
     borderColor: COLORS.DISCREET,
     borderWidth: 1,
     borderRadius: 20
+  },
+  label: {
+    lineHeight: LINE_HEIGHT.normal
   }
 });

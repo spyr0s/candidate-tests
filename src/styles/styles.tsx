@@ -9,10 +9,10 @@ export const FONT_SIZE = {
   larger: scale(18)
 };
 export const LINE_HEIGHT = {
-  small: scale(18),
-  normal: scale(21),
-  large: scale(24),
-  larger: scale(27)
+  small: scale(24),
+  normal: scale(28),
+  large: scale(32),
+  larger: scale(36)
 };
 export const SPACING = {
   small: scale(8),
@@ -78,7 +78,7 @@ const list = StyleSheet.create({
   container: {
     borderBottomColor: COLORS.LIGHT,
     borderBottomWidth: 1,
-    backgroundColor: COLORS.BACKGROUND
+    backgroundColor: COLORS.BACKGROUND,
   },
   title: {
     color: COLORS.TINT,

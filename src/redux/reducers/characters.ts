@@ -21,14 +21,11 @@ export function charactersReducer(
 ) {
   switch (action.type) {
     case GET_CHARACTERS_REQUEST:
-      console.log("CHAR REQUEST");
       return {
         ...state,
         loading: true
       };
     case GET_CHARACTERS_SUCCESS:
-      console.log("CHAR SUCCESS", action.characters);
-
       let characters;
       if (action.append) {
         characters = {

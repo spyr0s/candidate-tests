@@ -1,7 +1,7 @@
 import { Http, HttpResponse } from "./Http";
 
 export interface Query {
-  [key: string]: string | number;
+  [key: string]: any;
 }
 export default class Api extends Http {
   static ENDPOINT = "https://rickandmortyapi.com/api/";
@@ -24,6 +24,7 @@ export default class Api extends Http {
   getCharacters(filters: Query = null): Promise<HttpResponse> {
     const filterQuery = filters !== null ? this.createUrlQuery(filters) : "";
     const url = Api.ENDPOINT + "character/" + filterQuery;
+    console.log(url);
     return this.getRequest(url);
   }
 

@@ -8,7 +8,7 @@ import {
   ScrollView,
   Animated,
   Dimensions,
-  BackHandler
+  BackHandler,
 } from "react-native";
 import { ListItem } from "react-native-elements";
 import { list } from "../../styles/styles";

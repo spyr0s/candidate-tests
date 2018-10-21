@@ -1,13 +1,7 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import { Icon } from "react-native-elements";
 
-import {
-  View,
-  StyleSheet,
-  BackHandler,
-  Modal,
-  ScrollView
-} from "react-native";
+import { View, StyleSheet, BackHandler, Modal, ScrollView } from "react-native";
 import { COLORS } from "../../styles";
 import {
   SPACING,
@@ -41,6 +35,72 @@ export default class HelpModal extends React.Component<HelpModalProps> {
   };
 
   render() {
+    let gendersHelp: Array<ReactElement<Gender>> = [];
+    let statusesHelp: Array<ReactElement<Status>> = [];
+    let speciesHelp: Array<ReactElement<Species>> = [];
+    ["Male", "Female", "Genderless", "unknown"].forEach(
+      (gender: "Male" | "Female" | "Genderless" | "unknown") => {
+        gendersHelp.push(
+          <Gender
+            key={gender}
+            gender={gender}
+            style={filterStyles.button}
+            showLabel
+          />
+        );
+      }
+    );
+    ["Alive", "Dead", "unknown"].forEach(
+      (status: "Alive" | "Dead" | "unknown") => {
+        statusesHelp.push(
+          <Status
+            key={status}
+            status={status}
+            style={filterStyles.button}
+            showLabel
+          />
+        );
+      }
+    );
+    [
+      "Alien",
+      "Animal",
+      "Cronenberg",
+      "Disease",
+      "Human",
+      "Humanoid",
+      "Mytholog",
+      "Parasite",
+      "Poopybutthole",
+      "Robot",
+      "Vampire",
+      "unknown"
+    ].forEach(
+      (
+        species:
+          | "Alien"
+          | "Animal"
+          | "Cronenberg"
+          | "Disease"
+          | "Human"
+          | "Humanoid"
+          | "Mytholog"
+          | "Parasite"
+          | "Poopybutthole"
+          | "Robot"
+          | "Vampire"
+          | "unknown"
+      ) => {
+        speciesHelp.push(
+          <Species
+            key={species}
+            species={species}
+            style={filterStyles.button}
+            showLabel
+          />
+        );
+      }
+    );
     return (
       <View>
         <Modal
@@ -73,22 +133,7 @@ export default class HelpModal extends React.Component<HelpModalProps> {
                     { flexDirection: "column" }
                   ]}
                 >
-                  <Gender gender="Male" style={filterStyles.button} showLabel />
-                  <Gender
-                    gender="Female"
-                    style={filterStyles.button}
-                    showLabel
-                  />
-                  <Gender
-                    gender="Genderless"
-                    style={filterStyles.button}
-                    showLabel
-                  />
-                  <Gender
-                    gender="unknown"
-                    style={filterStyles.button}
-                    showLabel
-                  />
+                  {gendersHelp}
                 </View>
               </View>
               <View>
@@ -99,17 +144,7 @@ export default class HelpModal extends React.Component<HelpModalProps> {
                     { flexDirection: "column" }
                   ]}
                 >
-                  <Status
-                    status="Alive"
-                    style={filterStyles.button}
-                    showLabel
-                  />
-                  <Status status="Dead" style={filterStyles.button} showLabel />
-                  <Status
-                    status="unknown"
-                    style={filterStyles.button}
-                    showLabel
-                  />
+                  {statusesHelp}
                 </View>
               </View>
               <View>
@@ -120,66 +155,7 @@ export default class HelpModal extends React.Component<HelpModalProps> {
                     { flexDirection: "column" }
                   ]}
                 >
-                  <Species
-                    species="Human"
-                    style={filterStyles.button}
-                    showLabel
-                  />
-                  <Species
-                    species="Alien"
-                    style={filterStyles.button}
-                    showLabel
-                  />
-                  <Species
-                    species="Humanoid"
-                    style={filterStyles.button}
-                    showLabel
-                  />
-                  <Species
-                    species="Cronenberg"
-                    style={filterStyles.button}
-                    showLabel
-                  />
-                  <Species
-                    species="Disease"
-                    style={filterStyles.button}
-                    showLabel
-                  />
-                  <Species
-                    species="Mytholog"
-                    style={filterStyles.button}
-                    showLabel
-                  />
-                  <Species
-                    species="Robot"
-                    style={filterStyles.button}
-                    showLabel
-                  />
-                  <Species
-                    species="Poopybutthole"
-                    style={filterStyles.button}
-                    showLabel
-                  />
-                  <Species
-                    species="Animal"
-                    style={filterStyles.button}
-                    showLabel
-                  />
-                  <Species
-                    species="Parasite"
-                    style={filterStyles.button}
-                    showLabel
-                  />
-                  <Species
-                    species="Vampire"
-                    style={filterStyles.button}
-                    showLabel
-                  />
-                  <Species
-                    species="unknown"
-                    style={filterStyles.button}
-                    showLabel
-                  />
+                  {speciesHelp}
                 </View>
               </View>
             </ScrollView>

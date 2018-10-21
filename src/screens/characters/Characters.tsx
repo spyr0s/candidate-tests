@@ -12,7 +12,13 @@ import {
 import { RickAndMorty } from "../../app/namespaces";
 import { connect } from "react-redux";
 import Loader from "../../components/Loader";
-import { FlatList, View, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  FlatList,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  LayoutAnimation
+} from "react-native";
 import CharacterItem from "./CharacterItem";
 import { NavigationInjectedProps } from "react-navigation";
 import { CharacterScreenParams } from "../character/Character";
@@ -22,9 +28,11 @@ import { COLORS } from "../../styles";
 import { AnyAction } from "redux";
 import LoadingMore from "../../components/LoadingMore";
 import { store } from "../../../App";
+import { Gender } from "../../components/character/Gender";
+import { Species } from "../../components/character/Species";
+import { Status } from "../../components/character/Status";
 
 interface State {
-  page: number;
   loadingMore: boolean;
 }
 export interface CharactersScreenProps {
@@ -43,7 +51,6 @@ class CharactersScreen extends React.Component<
   constructor(props) {
     super(props);
     this.state = {
-      page: 1,
       loadingMore: false
     };
   }
@@ -52,34 +59,70 @@ class CharactersScreen extends React.Component<
     this.getCharacters(false);
   }
 
-  getCharacters(append: boolean): Promise<AnyAction> {
+  componentWillUpdate(
+    nextProps: CharactersScreenProps & NavigationInjectedProps
+  ) {
+    if (this.props !== nextProps) {
+      if (this.props.characters.result !== nextProps.characters.result) {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      }
+    }
+  }
+
+  getCharacters(append: boolean, page: number = 1): Promise<AnyAction> {
     const filters = this.props.filters;
-    filters["page"] = this.state.page;
+    filters["page"] = page;
     return this.props.getCharacters(filters, append);
   }
 
   render() {
-    const hasMore = this.props.info && this.props.info.pages > this.state.page;
-    const filtersColor = !this.hasFilters() ? COLORS.TINT : COLORS.SUCCESS;
+    const hasMore =
+      this.props.info && this.props.info.pages > this.props.filters.page;
     return (
       <Container>
         {this.props.info && (
           <View style={charactersScreenStyles.topContainer}>
-            <Text>
+            <Text style={charactersScreenStyles.resultText}>
               {this.props.info.count} results ({this.props.filters.page} of{" "}
               {this.props.info.pages} pages)
             </Text>
-            <TouchableOpacity
-              onPress={() => {
-                this.props.navigation.toggleDrawer();
-              }}
-            >
-              <Icon
-                name="filter"
-                type="material-community"
-                color={filtersColor}
-              />
-            </TouchableOpacity>
+            <View style={charactersScreenStyles.filtersContainer}>
+              {this.props.filters.species && (
+                <Species
+                  species={this.props.filters.species}
+                  onPress={() => {
+                    this.setFilter("species", this.props.filters.species);
+                  }}
+                />
+              )}
+              {this.props.filters.gender && (
+                <Gender
+                  gender={this.props.filters.gender}
+                  onPress={() => {
+                    this.setFilter("gender", this.props.filters.gender);
+                  }}
+                />
+              )}
+              {this.props.filters.status && (
+                <Status
+                  status={this.props.filters.status}
+                  onPress={() => {
+                    this.setFilter("status", this.props.filters.status);
+                  }}
+                />
+              )}
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigation.toggleDrawer();
+                }}
+              >
+                <Icon
+                  name="filter"
+                  type="material-community"
+                  color={COLORS.TINT}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         )}
         <FlatList
@@ -92,16 +135,14 @@ class CharactersScreen extends React.Component<
             </Text>
           }
           onEndReached={() => {
-            this.setState(
-              { loadingMore: true, page: this.state.page + 1 },
-              () => {
-                if (hasMore) {
-                  this.getCharacters(true).then(() => {
-                    this.setState({ loadingMore: false });
-                  });
-                }
+            this.setState({ loadingMore: true }, () => {
+              if (hasMore) {
+                const page = parseInt(this.props.filters.page.toString()) + 1;
+                this.getCharacters(true, page).then(() => {
+                  this.setState({ loadingMore: false });
+                });
               }
-            );
+            });
           }}
           onEndReachedThreshold={0.5}
           ListFooterComponent={
@@ -115,14 +156,6 @@ class CharactersScreen extends React.Component<
     );
   }
 
-  hasFilters(): boolean {
-    const hasFilters =
-      this.props.filters.gender !== null ||
-      this.props.filters.status !== null ||
-      this.props.filters.species !== null;
-    return hasFilters;
-  }
-
   renderItem: any = ({ item }) => {
     const character: RickAndMorty.Character = this.props.characters.entities
       .characters[item];
@@ -131,14 +164,7 @@ class CharactersScreen extends React.Component<
       <CharacterItem
         character={character}
         onIconPress={(type: string, value: string) => {
-          let filters = this.props.filters;
-          if (filters[type] === value) {
-            filters[type] = null;
-          } else {
-            filters[type] = value;
-          }
-          filters["page"] = 1;
-          this.changeFilters(filters);
+          this.setFilter(type, value);
         }}
         onPress={() => {
           const params: CharacterScreenParams = { character };
@@ -147,6 +173,17 @@ class CharactersScreen extends React.Component<
       />
     );
   };
+
+  setFilter(type: string, value: string) {
+    let filters = this.props.filters;
+    if (filters[type] === value) {
+      filters[type] = null;
+    } else {
+      filters[type] = value;
+    }
+    filters["page"] = 1;
+    this.changeFilters(filters);
+  }
 
   changeFilters(filters) {
     this.props
@@ -195,5 +232,9 @@ const charactersScreenStyles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
     padding: SPACING.large
+  },
+  resultText: {},
+  filtersContainer: {
+    flexDirection: "row"
   }
 });

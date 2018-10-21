@@ -1,6 +1,6 @@
 import React from "react";
 import { Provider } from "react-redux";
-import { StatusBar, NetInfo, ConnectionInfo } from "react-native";
+import { StatusBar, NetInfo, ConnectionInfo, UIManager } from "react-native";
 import COLORS from "./src/styles/colors";
 import AppComponent from "./src/router/Router";
 import configureStore from "./src/app/store";
@@ -8,6 +8,9 @@ import AppWrapper from "./src/components/AppWrapper";
 import { networkStatusChange } from "./src/redux/actions/app";
 export const store = configureStore({});
 export interface Props {}
+
+UIManager.setLayoutAnimationEnabledExperimental &&
+  UIManager.setLayoutAnimationEnabledExperimental(true);
 
 export default class App extends React.Component<Props> {
   render() {

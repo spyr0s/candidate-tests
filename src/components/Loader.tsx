@@ -25,21 +25,16 @@ export default class Loader extends React.Component<LoaderProps, State> {
   }
 
   componentWillReceiveProps(nextProps: LoaderProps) {
-    console.log("PROPS COMING", this.props, nextProps);
     if (this.props !== nextProps) {
       if (this.props.visible !== nextProps.visible) {
         if (nextProps.visible === false) {
-          console.log("HIDE PROP COMING");
           this.setState({ visible: nextProps.visible });
           if (this.timerId !== null) {
-            console.log("TIMED OUT");
             clearTimeout(this.timerId);
             this.timerId = null;
           }
         } else {
-          console.log("SHOW PROP COMING");
           this.timerId = setTimeout(() => {
-            console.log("TIME OUT PASSED - SHOWING");
             this.setState({ visible: nextProps.visible });
           }, LOADER_DELAY);
         }
