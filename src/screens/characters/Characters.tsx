@@ -15,9 +15,7 @@ import {
   FlatList,
   View,
   StyleSheet,
-  TouchableOpacity,
-  BackHandler
-} from "react-native";
+  TouchableOpacity} from "react-native";
 import CharacterItem from "./CharacterItem";
 import { NavigationInjectedProps } from "react-navigation";
 import { CharacterScreenParams } from "../character/Character";
@@ -72,7 +70,6 @@ class CharactersScreen extends React.Component<
     nextProps: CharactersScreenProps & NavigationInjectedProps,
     nextState: State
   ) {
-    console.log("SHOULD UPDATE", this.props.filters, nextProps.filters);
     if (
       nextProps.characters.result !== this.props.characters.result ||
       nextProps.filters !== this.props.filters
@@ -85,7 +82,6 @@ class CharactersScreen extends React.Component<
   render() {
     const hasMore = this.props.info && this.props.info.pages > this.state.page;
     const filtersColor = !this.hasFilters() ? COLORS.TINT : COLORS.SUCCESS;
-    console.log("RENDER", hasMore, filtersColor);
     return (
       <Container>
         {this.props.info && (
@@ -106,7 +102,7 @@ class CharactersScreen extends React.Component<
         )}
         <FlatList
           data={this.props.characters.result}
-          keyExtractor={(item: number, index: number) => item.toString()}
+          keyExtractor={(item: number) => item.toString()}
           renderItem={this.renderItem}
           onEndReached={() => {
             this.setState(
@@ -149,14 +145,12 @@ class CharactersScreen extends React.Component<
         character={character}
         onIconPress={(type: string, value: string) => {
           let filters = this.props.filters;
-          console.log("BEF ",filters);
           if (filters[type] === value) {
             filters[type] = null;
           } else {
             filters[type] = value;
           }
           filters["page"] = 1;
-          console.log("AFTER ",filters);
           this.props.setFilters(filters);
         }}
         onPress={() => {

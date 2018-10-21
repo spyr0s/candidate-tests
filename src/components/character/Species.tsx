@@ -1,14 +1,8 @@
 import React from "react";
-import { Icon } from "react-native-elements";
-import { COLORS, styles } from "../../styles";
-import { SPACING, text, DISABLED_OPACITY } from "../../styles/styles";
-import Text from "../../components/Text";
+import { COLORS } from "../../styles";
 import {
-  View,
-  TouchableOpacity,
-  TouchableOpacityProps,
-  StyleSheet
-} from "react-native";
+  TouchableOpacityProps} from "react-native";
+import { Type, IconProps } from "./Type";
 
 export interface SpeciesProps {
   species:
@@ -29,46 +23,14 @@ export interface SpeciesProps {
   onPress?: () => void;
   selected?: boolean;
 }
-interface IconProps {
-  name: string;
-  color: string;
-  type: string;
-}
 export class Species extends React.PureComponent<
   SpeciesProps & TouchableOpacityProps
 > {
   render() {
     const props: IconProps = this.getProps();
-    const type = this.props.type ? " (" + this.props.type + ")" : null;
-    const selected = this.props.selected ? speciesStyles.selected : null;
-    return (
-      <TouchableOpacity
-        disabled={this.props.selected}
-        onPress={() => {
-          this.props.onPress;
-        }}
-        style={speciesStyles.container}
-        {...this.props}
-      >
-        <Icon
-          underlayColor="transparent"
-          iconStyle={[speciesStyles.icon, selected]}
-          type={props.type}
-          name={props.name}
-          color={props.color}
-          containerStyle={{
-            alignSelf: "flex-start",
-            marginRight: SPACING.small
-          }}
-        />
-        {this.props.showLabel && (
-          <View style={{ flexDirection: "row" }}>
-            <Text>{this.props.species}</Text>
-            <Text>{type}</Text>
-          </View>
-        )}
-      </TouchableOpacity>
-    );
+    const type = this.props.type ? " (" + this.props.type + ")" : "";
+    const value = this.props.species + type;
+    return <Type value={value} {...this.props} typeProps={props} />;
   }
 
   getProps(): IconProps {
@@ -151,20 +113,3 @@ export class Species extends React.PureComponent<
     }
   }
 }
-const speciesStyles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    marginTop: SPACING.small
-  },
-  icon: {
-    textAlign: "center",
-    padding:2,
-    borderColor: COLORS.TRANSPARENT,
-    borderWidth:1,
-  },
-  selected: {
-    borderColor: COLORS.DISCREET,
-    borderWidth: 1,
-    borderRadius: 20
-  }
-});

@@ -1,26 +1,23 @@
-import React, { Component } from "react";
+import React from "react";
 import { RickAndMorty } from "../../app/namespaces";
 import Container from "../../components/Container";
 import { NavigationInjectedProps } from "react-navigation";
 import Text from "../../components/Text";
 import {
-  View,
   Image,
   ScrollView,
-  TouchableOpacity,
-  Linking,
   Animated,
   Dimensions,
   BackHandler
 } from "react-native";
-import { ListItem, Icon } from "react-native-elements";
+import { ListItem } from "react-native-elements";
 import { list } from "../../styles/styles";
-import { Gender } from "../characters/Gender";
-import { Status } from "../characters/Status";
+import { Gender } from "../../components/character/Gender";
+import { Status } from "../../components/character/Status";
 import { scale } from "../../styles/scaling";
 import { COLORS } from "../../styles";
 import moment from "moment";
-import { Species } from "../characters/Species";
+import { Species } from "../../components/character/Species";
 export interface CharacterScreenParams {
   character: RickAndMorty.Character;
 }

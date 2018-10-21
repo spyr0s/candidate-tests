@@ -1,5 +1,4 @@
 import { Http, HttpResponse } from "./Http";
-import { RickAndMorty } from "../app/namespaces";
 
 export interface Query {
   [key: string]: string | number;

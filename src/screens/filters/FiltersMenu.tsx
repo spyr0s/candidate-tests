@@ -1,27 +1,21 @@
 import React from "react";
 import {
-  NavigationActions,
-  NavigationScreenProp,
-  StackActions,
   NavigationInjectedProps
 } from "react-navigation";
 import {
   ScrollView,
   View,
-  ImageBackground,
-  Image,
   TouchableOpacity,
   StyleSheet
 } from "react-native";
 import { connect } from "react-redux";
 import { COLORS } from "../../styles";
 import { Icon } from "react-native-elements";
-import { scale } from "../../styles/scaling";
 import Text from "../../components/Text";
 import { FONT_SIZE, SPACING } from "../../styles/styles";
-import { Gender } from "../characters/Gender";
-import { Status } from "../characters/Status";
-import { Species } from "../characters/Species";
+import { Gender } from "../../components/character/Gender";
+import { Status } from "../../components/character/Status";
+import { Species } from "../../components/character/Species";
 import HelpModal from "./HelpModal";
 import { Query } from "../../services/Api";
 import { setFilters, CharacterAction, resetFilters } from "../../redux/actions/characters";

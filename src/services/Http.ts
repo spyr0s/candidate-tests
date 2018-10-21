@@ -59,7 +59,6 @@ export abstract class Http {
     if (headers === null) {
       headers = this.getDefaultHeaders();
     }
-    console.log(url, headers);
     return fetch(url, {
       method: "GET",
       headers: headers

@@ -57,7 +57,6 @@ export function getCharacters(
   page: number = 1,
   append: boolean = true
 ) {
-  console.log(filters, page);
   return function(dispatch) {
     dispatch(getCharactersRequest());
     return new Api()

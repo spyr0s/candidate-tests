@@ -1,9 +1,8 @@
 import React from "react";
-import { Overlay, ListItem, OverlayProps, Icon } from "react-native-elements";
+import { Icon } from "react-native-elements";
 
 import {
   View,
-  FlatList,
   StyleSheet,
   BackHandler,
   Modal,
@@ -17,10 +16,10 @@ import {
   ICON_SIZE
 } from "../../styles/styles";
 import Text from "../../components/Text";
-import { Gender } from "../characters/Gender";
+import { Gender } from "../../components/character/Gender";
 import { filterStyles } from "./FiltersMenu";
-import { Status } from "../characters/Status";
-import { Species } from "../characters/Species";
+import { Status } from "../../components/character/Status";
+import { Species } from "../../components/character/Species";
 
 export interface HelpModalProps {
   title: string;

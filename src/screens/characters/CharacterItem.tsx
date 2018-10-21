@@ -3,9 +3,9 @@ import { View } from "react-native";
 import { Avatar, ListItem } from "react-native-elements";
 import { RickAndMorty } from "../../app/namespaces";
 import { list } from "../../styles/styles";
-import { Gender } from "./Gender";
-import { Species } from "./Species";
-import { Status } from "./Status";
+import { Gender } from "../../components/character/Gender";
+import { Species } from "../../components/character/Species";
+import { Status } from "../../components/character/Status";
 
 export interface CharacterProps {
   character: RickAndMorty.Character;
